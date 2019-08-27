@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+    <title>Char Video</title>
+    <style>
+        html, body {
+            width: 100%;
+        }
+
+        video {
+            margin: auto;
+            position: relative;
+            top: 0;
+            left: 0;
+            width: 20%;
+            height: 20%;
+        }
+
+        #stage {
+            margin: auto;
+            position: absolute;
+            top: 0;
+            left: 20%;
+            right: 0;
+            width: 80%;
+            font-family: Courier New;
+            font-size: 16px;
+            line-height: 10px;
+        }
+
+        #stage img {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <script src="mapChar.js"></script>
+</head>
+<body>
+<input type="file" id="file">
+<button id="play" type="button" onclick="play()">Tạo</button>
+<br>
+<video controls="controls">
+
+</video>
+<!--<div id="stage"></div>-->
+<pre id="stage"></pre>
+<script type="text/javascript">
+    var interval, video = document.getElementsByTagName("video-to-text.html")[0],
+        stage = document.getElementById("stage"),
+        canvas = document.createElement("canvas"),
+        captureImage = function () {
+            var ctx;
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            if (canvas.width) {
+                ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                stage.innerText = toChars(ctx, canvas.width, canvas.height, 100);
+            }
+        },
+        beginCapture = function () {
+            interval = setInterval(function () {
+                captureImage(1)
+            }, 100);
+        },
+        endCapture = function () {
+            if (interval) {
+                clearInterval(interval);
+            }
+        },
+        play = function () {
+            var file = document.getElementById('file').files[0];
+            var url = URL.createObjectURL(file);
+            if (!file) {
+                alert("Chọn tệp tin");
+            }
+            console.log(url);
+            video.src = url;
+            video.play();
+        };
+    video.addEventListener("play", beginCapture);
+    video.addEventListener("pause", endCapture);
+    video.addEventListener("ended", endCapture);
+    video.addEventListener("playing", function () {
+        endCapture();
+        beginCapture();
+    });
+</script>
+
+</body>
+</html>
